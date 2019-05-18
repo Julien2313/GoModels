@@ -1,5 +1,5 @@
 package model
 
 type Noise struct {
-	Mean, Variance, Power float64
+	Mean, Variance float64
 }
