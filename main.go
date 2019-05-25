@@ -16,10 +16,10 @@ func main() {
 	rand.Seed(helpers.GenerateSeed())
 	dataSet := &model.Linear2D{
 		NbrPoints: 100,
-		MinX:      0,
+		MinX:      -10,
 		MaxX:      10,
-		A:         3,
-		B:         0,
+		A:         rand.Float64()*2.0 - 1.0,
+		B:         rand.Float64()*2.0 - 1.0,
 		Noise: &model.Noise{
 			Mean:     0,
 			Variance: 1,
@@ -30,29 +30,24 @@ func main() {
 		panic(err)
 	}
 
-	////////////
-
-	ols := &regression.Ols{}
-
-	ols.ConvertPoints(&dataSet.Points)
-	ols.ComputeMeans()
-	ols.ComputeErrors()
-	ols.ComputeBs()
-
-	////////////
-
 	p, err := plot.New()
 	if err != nil {
 		panic(err)
 	}
 
-	p.Title.Text = "First example"
+	ols := &regression.Ols{}
+	ols.Compute(&dataSet.Points, p)
+
+	p.Title.Text = "Regression OLS"
 	p.X.Label.Text = "X"
 	p.Y.Label.Text = "Y"
+	p.X.Min = -10
+	p.X.Max = 10
+	p.Y.Min = -20
+	p.Y.Max = 20
 
 	err = plotutil.AddLinePoints(p,
-		"Data", helpers.ConvertoPointForPlotting(&dataSet.Points),
-		"Estimations", helpers.ConvertoPointForPlotting(&dataSet.Points))
+		"Data", helpers.ConverPointtoPointForPlotting(&dataSet.Points))
 	if err != nil {
 		panic(err)
 	}
